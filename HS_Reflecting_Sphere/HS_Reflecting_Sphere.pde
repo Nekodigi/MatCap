@@ -1,32 +1,25 @@
-//get refrected light determined by(2theta and 2phi)
-int pSize = 1;//pixel size
+//high speed mirror
+int pSize = 2;//3 pixel size
 PImage img;
-float zoff = 0;
+float thetaOff = PI;
+float phiOff = HALF_PI;
+ArrayList<Sphere> spheres = new ArrayList<Sphere>();
 
 void setup(){
   img = loadImage("sky pd.png");
   img.loadPixels();
   size(500, 500);
+  //fullScreen();
+  for(int i=0; i<10; i++){
+    spheres.add(new Sphere(new PVector(random(width), random(height)), height/10));
+  }
 }
 
 void draw(){
+  background(0);
   noStroke();
-  for(float x=0; x<width; x+=pSize){
-    for(float y=0; y<height; y+=pSize){
-      float theta = 0;//-PI<=theta<=PI
-      float phi = 0;//-HALF_PI<=phi<=HALF_PI
-      float yn = (y-height/2)/(height/2);//y normalized
-      float xm = sqrt(1-yn*yn)*width/2;//x ma
-      float xn = (x-width/2)/xm;//x normalized
-      if(-1<=xn && xn<=1){
-        theta = asin(xn)*2;//it's same as map(asin(xn), -HALF_PI, HALF_PI, -PI, PI)
-        phi = asin(yn);
-      }
-      int i = (int)map((theta+PI)%TWO_PI, 0, TWO_PI, 0, img.width-1);
-      int j = (int)map((phi+HALF_PI)%PI, 0, PI, 0, img.height-1);
-      fill(img.pixels[i+j*img.width]);
-      rect(x, y, pSize, pSize);
-    }
+  for(Sphere sphere : spheres){
+    sphere.show();
   }
-  zoff += 0.01;
+  thetaOff += 0.02;
 }
